@@ -1,0 +1,38 @@
+test commit
+% --- MAIN SCRIPT ---
+
+% Define the intrinsic parameters and relative pose.
+intrinsic_parameters.image_resolution = [640, 480];
+intrinsic_parameters.principle_point = [658, 508];
+intrinsic_parameters.focal_length = 880;
+
+relative_pose.rotation = eye(3);
+relative_pose.translation = [0.18, 0, 0];
+
+% Calculate the 3D position of the feature in the left camera coordinate frame.
+left_image_point = [320, 508];
+right_image_point = [180, 508];
+[X, Y, Z] = calculate_3D_position(left_image_point, right_image_point, intrinsic_parameters, relative_pose);
+
+% Print the 3D position of the feature in the left camera coordinate frame.
+fprintf('3D position of the feature in the left camera coordinate frame: (%f, %f, %f)\n', X, Y, Z);
+
+% --- FUNCTION DEFINITION ---
+
+function [X, Y, Z] = calculate_3D_position(left_image_point, right_image_point, intrinsic_parameters, relative_pose)
+    % Extract the intrinsic parameters and relative pose.
+    image_resolution = intrinsic_parameters.image_resolution;
+    principle_point = intrinsic_parameters.principle_point;
+    focal_length = intrinsic_parameters.focal_length;
+    B = relative_pose.translation(1); % Baseline distance
+    
+    % Calculate the disparity and normalized image coordinates.
+    disparity = left_image_point(1) - right_image_point(1);
+    xl = (left_image_point(1) - principle_point(1));
+    yl = (left_image_point(2) - principle_point(2));
+    
+    % Calculate the 3D position using stereo triangulation formula.
+    Z = (focal_length * B) / disparity;
+    X = (xl * Z) / focal_length;
+    Y = (yl * Z) / focal_length;
+end
