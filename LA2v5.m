@@ -103,7 +103,7 @@ qlinear(5) = -pi/2;
 rl.model.plot(qlinear,'nojaxes','noarrow','nowrist','nobase','noshadow','noname','notiles', 'fps', 60 ,'lightpos', ([0 0 -20]))
 
 % Add Ellipsoid to UR10
-capsuleLink4 = collisionSphere(0.5);
+capsuleLink4 = collisionSphere(1);
 capsuleLink5 = collisionCapsule(0.1,0.12);
 capsuleLink6 = collisionCapsule(0.1,0.05);
 
