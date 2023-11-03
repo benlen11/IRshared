@@ -240,11 +240,15 @@ transSpoU3{7} = transl(0.5, 1.7, 0.55);
 transSpoU3{8} = transl(-1.5, 1.8, 0.55);
 
 %% person collision
-isCollidingPers = checkCollision(persCol, floorCol);
+isCollidingPersFloor = checkCollision(persCol, floorCol);
+isCollidingPersLC1 = checkCollision(persCol, lightC1);
+isCollidingPersLC2 = checkCollision(persCol, lightC2);
+isCollidingPersLC3 = checkCollision(persCol, lightC3);
+isCollidingPersLC4 = checkCollision(persCol, lightC4);
 % show(persCol);
 % show(floorCol);
 
-if isCollidingPers
+if isCollidingPersFloor || isCollidingPersLC1 || isCollidingPersLC2 || isCollidingPersLC3 || isCollidingPersLC4
             error('Person in operating area');
         else
             disp('All clear');
