@@ -47,12 +47,12 @@ basin = PlaceObject('Sink.ply',[-2,0.9,0.45]);
 vertsbas = [get(basin,'Vertices'), ones(size(get(basin,'Vertices'),1),1)];
 set(basin,'Vertices',vertsbas(:,1:3));
 
-fence = PlaceObject('fenceFinal.ply');
-vertfen = get(fence,'Vertices');
-vertfen(:,1) = vertfen(:,1)*3;
-vertfen(:,2) = vertfen(:,2)*6;
-tranVertfen = [vertfen, ones(size(vertfen,1),1)] * transl(1,-0.5,0)' * trotz(pi/2);
-set(fence,'Vertices',tranVertfen(:,1:3));
+% fence = PlaceObject('fenceFinal.ply');
+% vertfen = get(fence,'Vertices');
+% vertfen(:,1) = vertfen(:,1)*3;
+% vertfen(:,2) = vertfen(:,2)*6;
+% tranVertfen = [vertfen, ones(size(vertfen,1),1)] * transl(1,-0.5,0)' * trotz(pi/2);
+% set(fence,'Vertices',tranVertfen(:,1:3));
 
 fire = PlaceObject('fireExtinguisher.ply',[1, -1.25, 0]);
 vertsfire = [get(fire,'Vertices'), ones(size(get(fire,'Vertices'),1),1)];
@@ -61,6 +61,13 @@ set(fire,'Vertices',vertsfire(:,1:3));
 emer = PlaceObject('emergencyStopWallMounted.ply',[1.5, -1, 0.5]);
 vertsemer = [get(emer,'Vertices'), ones(size(get(emer,'Vertices'),1),1)];
 set(emer,'Vertices',vertsemer(:,1:3));
+
+emer2 = PlaceObject('emergencyStopWallMounted.ply');
+vertemer = get(emer2,'Vertices');
+vertemer(:,1) = vertemer(:,1);
+vertemer(:,2) = vertemer(:,2);
+tranVertemer = [vertemer, ones(size(vertemer,1),1)] * transl(-1.63, 1.2, 0.5)' * trotz(pi);
+set(emer2,'Vertices',tranVertemer(:,1:3));
 
 pers = PlaceObject('personMaleOld.ply');
 vertpers = get(pers,'Vertices');

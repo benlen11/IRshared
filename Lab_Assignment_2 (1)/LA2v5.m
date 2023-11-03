@@ -62,6 +62,13 @@ emer = PlaceObject('emergencyStopWallMounted.ply',[1.5, -1, 0.5]);
 vertsemer = [get(emer,'Vertices'), ones(size(get(emer,'Vertices'),1),1)];
 set(emer,'Vertices',vertsemer(:,1:3));
 
+emer2 = PlaceObject('emergencyStopWallMounted.ply');
+vertemer = get(emer2,'Vertices');
+vertemer(:,1) = vertemer(:,1);
+vertemer(:,2) = vertemer(:,2);
+tranVertemer = [vertemer, ones(size(vertemer,1),1)] * transl(-1.63, 1.2, 0.5)' * trotz(pi);
+set(emer2,'Vertices',tranVertemer(:,1:3));
+
 pers = PlaceObject('personMaleOld.ply');
 vertpers = get(pers,'Vertices');
 tranVertpers = [vertpers, ones(size(vertpers,1),1)] * transl(-2.5,2,0)' * trotz(pi);  % outside light curtain
