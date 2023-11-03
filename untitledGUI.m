@@ -81,18 +81,27 @@ varargout{1} = handles.output;
 function pushbutton1_Callback(hObject, eventdata, handles)
 cla
 axes(handles.axes1);
-s = 1
-L1 = Link('d',0.0892,'a',0,'alpha',-pi/2,'offset',0,'qlim',[deg2rad(-360),deg2rad(360)]);
-L2 = Link('d',0.1357,'a',0.425,'alpha',-pi,'offset',-pi/2,'qlim',[deg2rad(-90),deg2rad(90)]);
-L3 = Link('d',0.1197,'a',0.39243,'alpha',pi,'offset',0,'qlim',[deg2rad(-170),deg2rad(170)]);
-L4 = Link('d',0.093,'a',0,'alpha',-pi/2,'offset',-pi/2,'qlim',[deg2rad(-360),deg2rad(360)]);
-L5 = Link('d',0.093,'a',0,'alpha',-pi/2,'offset',0,'qlim',[deg2rad(-360),deg2rad(360)]);
-L6 = Link('d',0,'a',0,'alpha',0,'offset',0,'qlim',[deg2rad(-360),deg2rad(360)]);
+
+
+% L1 = Link('d',0.0892,'a',0,'alpha',-pi/2,'offset',0,'qlim',[deg2rad(-360),deg2rad(360)]);
+% L2 = Link('d',0.1357,'a',0.425,'alpha',-pi,'offset',-pi/2,'qlim',[deg2rad(-90),deg2rad(90)]);
+% L3 = Link('d',0.1197,'a',0.39243,'alpha',pi,'offset',0,'qlim',[deg2rad(-170),deg2rad(170)]);
+% L4 = Link('d',0.093,'a',0,'alpha',-pi/2,'offset',-pi/2,'qlim',[deg2rad(-360),deg2rad(360)]);
+% L5 = Link('d',0.093,'a',0,'alpha',-pi/2,'offset',0,'qlim',[deg2rad(-360),deg2rad(360)]);
+% L6 = Link('d',0,'a',0,'alpha',0,'offset',0,'qlim',[deg2rad(-360),deg2rad(360)]);
+
+L1 = Link('d',0,    'a',0,      'alpha',-pi/2,    'offset',0,     'qlim',[deg2rad(-270),deg2rad(270)]);
+L2 = Link('d',0.180,    'a',0.6361,    'alpha',0,     'offset',0,     'qlim',[deg2rad(-180),deg2rad(180)]);
+L3 = Link('d',-0.1297,     'a',0.5579,    'alpha',0,    'offset',0,     'qlim',[deg2rad(-166),deg2rad(166)]);
+L4 = Link('d',0.106,     'a',0,'alpha',pi/2,     'offset',0,     'qlim',[deg2rad(-180),deg2rad(180)]);
+L5 = Link('d',0.106,    'a',0,  'alpha',-pi/2,    'offset',0,     'qlim',[deg2rad(-180),deg2rad(180)]);
+L6 = Link('d',0.11315,       'a',0,  'alpha',0,     'offset',0,     'qlim',[deg2rad(-270),deg2rad(270)]);
+
 
 % link(1) = Link('d',0.15185,'a',0,'alpha',pi/2,'qlim',deg2rad([-360 360]), 'offset',0);
 % link(2) = Link('d',0,'a',-0.24355,'alpha',0,'qlim', deg2rad([-360 360]), 'offset',0);
 
-model = SerialLink([L1 L2 L3 L4 L5 L6],'name','UR5');
+model = SerialLink([L1 L2 L3 L4 L5 L6],'name','TM12');
 
 for linkIndex = 0:model.n
     [ faceData, vertexData, plyData{linkIndex+1} ] = plyread(['UR5Link',num2str(linkIndex),'.ply'],'tri'); %#ok<AGROW>        
