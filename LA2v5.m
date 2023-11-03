@@ -62,10 +62,10 @@ emer = PlaceObject('emergencyStopWallMounted.ply',[1.5, -1, 0.5]);
 vertsemer = [get(emer,'Vertices'), ones(size(get(emer,'Vertices'),1),1)];
 set(emer,'Vertices',vertsemer(:,1:3));
 
-% box1 = collisionBox(0.5, 2, 1);
-% poseBox1 = transl(0.5,0.75,0.55);
-% box1.Pose = poseBox1;
-% show(box1);
+box1 = collisionBox(0.5, 2, 1);
+poseBox1 = transl(0.5,0.75,0.55);
+box1.Pose = poseBox1;
+show(box1);
 
 % centerpnt = [1,0.7,0.55];
 % side = 1.5;
@@ -103,7 +103,7 @@ qlinear(5) = -pi/2;
 rl.model.plot(qlinear,'nojaxes','noarrow','nowrist','nobase','noshadow','noname','notiles', 'fps', 60 ,'lightpos', ([0 0 -20]))
 
 % Add Ellipsoid to UR10
-capsuleLink4 = collisionCapsule(0.1,0.2);
+capsuleLink4 = collisionSphere(0.5);
 capsuleLink5 = collisionCapsule(0.1,0.12);
 capsuleLink6 = collisionCapsule(0.1,0.05);
 
@@ -318,12 +318,12 @@ for j = 1:1:4-1
     for i = 1:1:stepR
         rl.model.animate(qMatrixU3(i,:));
 
-        % % Collision detection section
-        % allTransforms = cell(1, rl.model.n);  % Pre-allocate a cell array for the transformations
-        % currentT = eye(4);  % Start with the identity matrix
-        % 
-        % qT = qMatrixU3(i,:);
-        % 
+        % Collision detection section
+        allTransforms = cell(1, rl.model.n);  % Pre-allocate a cell array for the transformations
+        currentT = eye(4);  % Start with the identity matrix
+
+        qT = qMatrixU3(i,:);
+
         % for k = 1:rl.model.n
         %     % Compute the transformation for the current link
         %     ai = rl.model.A(k, qT);
@@ -337,20 +337,20 @@ for j = 1:1:4-1
         %     % Store the transformation in the cell array
         %     allTransforms{k} = currentT;
         % end
-        % 
-        % % linkT6 = rl.model.fkine(qT);
-        % 
+
+        linkT6 = rl.model.fkine(qT);
+
         % linkT6 = allTransforms{6};
         % linkT5 = allTransforms{5};
         % linkT4 = allTransforms{4};
-        % 
-        % capsuleLink6.Pose = linkT6;
+
+        capsuleLink6.Pose = linkT6.T;
         % capsuleLink5.Pose = linkT5;
         % capsuleLink4.Pose = linkT4;
-        % 
+
         % show(capsuleLink4);
         % show(capsuleLink5);
-        % show(capsuleLink6);
+        show(capsuleLink6);
 
         % Animate sponge moving with arm
         trU = rl.model.fkine(rl.model.getpos);
@@ -361,16 +361,16 @@ for j = 1:1:4-1
         set(sponge,'Vertices',tranVertspo(:,1:3));
         % end of sponge animation
 
-        % isColliding6 = checkCollision(capsuleLink6, box1);
+        isColliding6 = checkCollision(capsuleLink6, box1);
         % isColliding5 = checkCollision(capsuleLink5, box1);
         % isColliding4 = checkCollision(capsuleLink4, box1);
-        % 
+
         % if isColliding6 || isColliding5 || isColliding4
-        % % if isColliding6
-        %     disp('One of the last three links is colliding with the box.');
-        % else
-        %     disp('No collisions detected with the last three links.');
-        % end
+        if isColliding6
+            error('Collision detected');
+        else
+            disp('No collisions detected');
+        end
     end
     qU1 = qMatrixU3(end, :);
 end
@@ -527,6 +527,16 @@ for j = 5:1:8-1
     for i = 1:1:stepR
         rl.model.animate(qMatrixU3(i,:));
 
+        % Collision detection
+        allTransforms = cell(1, rl.model.n);  % Pre-allocate a cell array for the transformations
+        currentT = eye(4);  % Start with the identity matrix
+
+        qT = qMatrixU3(i,:);
+
+        linkT6 = rl.model.fkine(qT);
+
+        capsuleLink6.Pose = linkT6.T;
+
         % Animate sponge moving with arm
         trU = rl.model.fkine(rl.model.getpos);
 
@@ -534,6 +544,15 @@ for j = 5:1:8-1
 
         tranVertspo = [vertspo, ones(size(vertspo,1),1)] * trU.T' * transl(offset)';
         set(sponge,'Vertices',tranVertspo(:,1:3));
+        % End of sponge animation
+
+        isColliding6 = checkCollision(capsuleLink6, box1);
+
+        if isColliding6
+            error('Collision detected');
+        else
+            disp('No collisions detected');
+        end
     end
 
     qU1 = qMatrixU3(end, :);
