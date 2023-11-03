@@ -264,43 +264,44 @@ if isCollidingPersFloor || isCollidingPersLC1 || isCollidingPersLC2 || isCollidi
 %% animate dobot
 % setup parameters
 steps = 3;
+stepslow = 35;
 
 % solve IK to pickup sponge by Dobot
 qPiD1 = rd.model.getpos;
 qPiD2 = rd.model.ikcon(transSpoD1, pickSpoDIG1);
-qMatrixD1 = jtraj(qPiD1,qPiD2,steps);
+qMatrixD1 = jtraj(qPiD1,qPiD2,stepslow);
 
 % animate Dobot pickup sponge
-for i = 1:1:steps
+for i = 1:1:stepslow
     rd.model.animate(qMatrixD1(i,:));
 end
 
-%animate Dobot & sponge moving
-% for j = 1:1:4
-%     qMoD1 = rd.model.getpos;
-%     qMoD2 = rd.model.ikcon(transSpoD2{j}, moveD{j});
-%     qMatrixD2 = jtraj(qMoD1,qMoD2,steps);
-%
-%     for i = 1:1:steps
-%         rd.model.animate(qMatrixD2(i,:));
-%
-%         % Animate sponge moving with arm
-%         trD = rd.model.fkine(rd.model.getpos);
-%
-%         offset = [0, 0, -0.06];
-%
-%         tranVertspo = [vertspo, ones(size(vertspo,1),1)] * trD.T' * transl(offset)';
-%         set(sponge,'Vertices',tranVertspo(:,1:3));
-%     end
-% end
+animate Dobot & sponge moving
+for j = 1:1:4
+    qMoD1 = rd.model.getpos;
+    qMoD2 = rd.model.ikcon(transSpoD2{j}, moveD{j});
+    qMatrixD2 = jtraj(qMoD1,qMoD2,stepslow);
+
+    for i = 1:1:stepslow
+        rd.model.animate(qMatrixD2(i,:));
+
+        % Animate sponge moving with arm
+        trD = rd.model.fkine(rd.model.getpos);
+
+        offset = [0, 0, -0.06];
+
+        tranVertspo = [vertspo, ones(size(vertspo,1),1)] * trD.T' * transl(offset)';
+        set(sponge,'Vertices',tranVertspo(:,1:3));
+    end
+end
 
 % solve IK to place sponge by Dobot
 qPlD1 = rd.model.getpos;
 qPlD2 = rd.model.ikcon(transSpoD3*rpy2tr(0,0,-pi/2), placeSpoDIG1);
-qMatrixD3 = jtraj(qPlD1,qPlD2,steps);
+qMatrixD3 = jtraj(qPlD1,qPlD2,stepslow);
 
 % animate sponge placement by Dobot
-for i = 1:1:steps
+for i = 1:1:stepslow
     rd.model.animate(qMatrixD3(i,:));
 
     % Animate sponge moving with arm
@@ -315,10 +316,10 @@ end
 % solve IK to home Dobot
 qHoD1 = rd.model.getpos;
 qHoD2 = rd.model.ikcon(transHoD1, homeDIG1);
-qMatrixD3 = jtraj(qHoD1,qHoD2,steps);
+qMatrixD3 = jtraj(qHoD1,qHoD2,stepslow);
 
 % animate Dobot home
-for i = 1:1:steps
+for i = 1:1:stepslow
     rd.model.animate(qMatrixD3(i,:));
 end
 
@@ -461,20 +462,20 @@ end
 % solve IK to pickup sponge by Dobot
 qPiD3 = rd.model.getpos;
 qPiD4 = rd.model.ikcon(transSpoD3, placeSpoDIG1);
-qMatrixD4 = jtraj(qPiD3,qPiD4,steps);
+qMatrixD4 = jtraj(qPiD3,qPiD4,stepslow);
 
 % animate Dobot pickup sponge
-for i = 1:1:steps
+for i = 1:1:stepslow
     rd.model.animate(qMatrixD4(i,:));
 end
 
 % solve IK to place sponge by Dobot
 qPlD3 = rd.model.getpos;
 qPlD4 = rd.model.ikcon(transSpoD1*rpy2tr(0,0,-pi/2), pickSpoDIG1);
-qMatrixD5 = jtraj(qPlD3,qPlD4,steps);
+qMatrixD5 = jtraj(qPlD3,qPlD4,stepslow);
 
 % animate sponge placement by Dobot
-for i = 1:1:steps
+for i = 1:1:stepslow
     rd.model.animate(qMatrixD5(i,:));
 
     % Animate sponge moving with arm
@@ -486,32 +487,32 @@ for i = 1:1:steps
     set(sponge,'Vertices',tranVertspo(:,1:3));
 end
 
-%animate Dobot & sponge moving
-% for j = 1:1:4
-%     qMoD1 = rd.model.getpos;
-%     qMoD2 = rd.model.ikcon(transSpoD2{j}, moveD{j});
-%     qMatrixD2 = jtraj(qMoD1,qMoD2,steps);
-%
-%     for i = 1:1:steps
-%         rd.model.animate(qMatrixD2(i,:));
-%
-%         % Animate sponge moving with arm
-%         trD = rd.model.fkine(rd.model.getpos);
-%
-%         offset = [0, 0, -0.06];
-%
-%         tranVertspo = [vertspo, ones(size(vertspo,1),1)] * trD.T' * transl(offset)';
-%         set(sponge,'Vertices',tranVertspo(:,1:3));
-%     end
-% end
+animate Dobot & sponge moving
+for j = 1:1:4
+    qMoD1 = rd.model.getpos;
+    qMoD2 = rd.model.ikcon(transSpoD2{j}, moveD{j});
+    qMatrixD2 = jtraj(qMoD1,qMoD2,stepslow);
+
+    for i = 1:1:stepslow
+        rd.model.animate(qMatrixD2(i,:));
+
+        % Animate sponge moving with arm
+        trD = rd.model.fkine(rd.model.getpos);
+
+        offset = [0, 0, -0.06];
+
+        tranVertspo = [vertspo, ones(size(vertspo,1),1)] * trD.T' * transl(offset)';
+        set(sponge,'Vertices',tranVertspo(:,1:3));
+    end
+end
 
 % solve IK to place sponge by Dobot
 qPlD1 = rd.model.getpos;
 qPlD2 = rd.model.ikcon(transSpoD3*rpy2tr(0,0,-pi/2), placeSpoDIG1);
-qMatrixD3 = jtraj(qPlD1,qPlD2,steps);
+qMatrixD3 = jtraj(qPlD1,qPlD2,stepslow);
 
 % animate sponge placement by Dobot
-for i = 1:1:steps
+for i = 1:1:stepslow
     rd.model.animate(qMatrixD3(i,:));
 
     % Animate sponge moving with arm
@@ -526,10 +527,10 @@ end
 % solve IK to home Dobot
 qHoD1 = rd.model.getpos;
 qHoD2 = rd.model.ikcon(transHoD1, homeDIG1);
-qMatrixD3 = jtraj(qHoD1,qHoD2,steps);
+qMatrixD3 = jtraj(qHoD1,qHoD2,stepslow);
 
 % animate Dobot home
-for i = 1:1:steps
+for i = 1:1:stepslow
     rd.model.animate(qMatrixD3(i,:));
 end
 
