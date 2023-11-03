@@ -350,7 +350,7 @@ for j = 1:1:4-1
 
         % show(capsuleLink4);
         % show(capsuleLink5);
-        show(capsuleLink6);
+        % show(capsuleLink6);
 
         % Animate sponge moving with arm
         trU = rl.model.fkine(rl.model.getpos);
@@ -537,6 +537,8 @@ for j = 5:1:8-1
 
         capsuleLink6.Pose = linkT6.T;
 
+        % show(capsuleLink6);
+
         % Animate sponge moving with arm
         trU = rl.model.fkine(rl.model.getpos);
 
@@ -571,4 +573,3 @@ end
 %%
 % rd.model.teach;
 % rl.model.teach(qlinear);
-
