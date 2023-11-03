@@ -62,6 +62,66 @@ emer = PlaceObject('emergencyStopWallMounted.ply',[1.5, -1, 0.5]);
 vertsemer = [get(emer,'Vertices'), ones(size(get(emer,'Vertices'),1),1)];
 set(emer,'Vertices',vertsemer(:,1:3));
 
+pers = PlaceObject('personMaleOld.ply');
+vertpers = get(pers,'Vertices');
+tranVertpers = [vertpers, ones(size(vertpers,1),1)] * transl(-2.5,2,0)' * trotz(pi);  % outside light curtain
+% tranVertpers = [vertpers, ones(size(vertpers,1),1)] * transl(-2.5,1.3,0)' * trotz(pi); % in light curtain
+set(pers,'Vertices',tranVertpers(:,1:3));
+% set(pers,'Vertices',tranVertpers(:,1:3), 'Facecolor', 'yellow');
+
+% Person collision detection
+xperC = tranVertpers(:, 1);
+yperC = tranVertpers(:, 2);
+zperC = tranVertpers(:, 3);
+
+heightperC = max(zperC) - min(zperC);
+centerZperC = (max(zperC) + min(zperC)) / 2;
+
+% radiiperC = sqrt(xperC.^2 + yperC.^2);
+% radiusperC = max(radiiperC);
+
+persCol = collisionCylinder(0.5, heightperC);
+
+poseperC = eye(4);
+poseperC(1:3, 4) = [mean(xperC); mean(yperC); centerZperC];
+persCol.Pose = poseperC;
+% End of person collision detection
+
+% box1 = collisionBox(0.5, 2, 1);
+% poseBox1 = transl(0.5,0.75,0.55);
+% box1.Pose = poseBox1;
+% show(box1);
+
+lightC1 = collisionCylinder(0.05, 4);
+poseLC1 = transl(2,-1,0);
+lightC1.Pose = poseLC1;
+show(lightC1);
+
+lightC2 = collisionCylinder(0.05, 4);
+poseLC2 = transl(2.3,-1,0);
+lightC2.Pose = poseLC2;
+show(lightC2);
+
+lightC3 = collisionCylinder(0.05, 4);
+poseLC3 = transl(2.6,-1,0);
+lightC3.Pose = poseLC3;
+show(lightC3);
+
+lightC4 = collisionCylinder(0.05, 4);
+poseLC4 = transl(2.9,-1,0);
+lightC4.Pose = poseLC4;
+show(lightC4);
+
+floorCol = collisionBox(6,4,0.1);
+poseFloor = transl(0,1,0);
+floorCol.Pose = poseFloor;
+% show(floorCol);
+
+% centerpnt = [1,0.7,0.55];
+% side = 1.5;
+% plotOptions.plotFaces = true;
+% [vertex,faces,faceNormals] = RectangularPrism(centerpnt-side/2, centerpnt+side/2,plotOptions);
+
 % basin2 = PlaceObject('Sink.ply',[-1.3,-1.15,0.55]);
 % vertsbas = [get(basin2,'Vertices'), ones(size(get(basin2,'Vertices'),1),1)]*trotz(pi/2);
 % set(basin2,'Vertices',vertsbas(:,1:3));
@@ -82,8 +142,8 @@ rd = DobotMagician(rDBaseTr);
 qdobot = zeros(1,rd.model.n);
 rd.model.plot(qdobot,'nojaxes','noarrow','nowrist','nobase','noshadow','noname','notiles', 'fps', 60 ,'lightpos', ([0 0 -20]))
 
-%setup UR10
-rlBaseTr = baseTr*transl(-0.5, 0.75, 0.5);
+%setup TM12
+rlBaseTr = baseTr*transl(-0.5, 0.75, 0.75);
 rl = UR10(rlBaseTr);
 rl.model.tool = troty(pi);
 qlinear = zeros(1,rl.model.n);
@@ -91,6 +151,15 @@ qlinear(2) = -pi/2;
 qlinear(4) = -pi/2;
 qlinear(5) = -pi/2;
 rl.model.plot(qlinear,'nojaxes','noarrow','nowrist','nobase','noshadow','noname','notiles', 'fps', 60 ,'lightpos', ([0 0 -20]))
+
+% Add Ellipsoid to TM12
+capsuleLink4 = collisionSphere(1);
+capsuleLink5 = collisionCapsule(0.1,0.12);
+capsuleLink6 = collisionCapsule(0.1,0.05);
+
+% T1 = getLinkTransform(rl, qlinear, linkNumber1);
+% T2 = getLinkTransform(rl, qlinear, linkNumber2);
+% T3 = getLinkTransform(rl, qlinear, linkNumber3);
 
 
 %% setup pick and place arrays for Dobot
@@ -128,51 +197,62 @@ transSpoD3 = transl(-1.669,0.5,0.55);
 % setup translate to home Dobot
 transHoD1 = transl(-2.06, 0.5, 0.971);
 
-% setup translate to home UR10
+% setup translate to home TM12
 transHoU1 = transl(-0.5904, 0.5861, 1.928);
 
-% setup initial guess for UR10
+% setup initial guess for TM12
 pickSpoUIG1 = [-0.0982   -0.4909    0.8836   -1.9635   -1.2763         0];
 
 placeSpoUIG1 = [0.5890   -0.5890    0.7854   -1.5708   -1.5708         0];
 
 homeUIG1 = [0 -90 0 -90 -90 0];
 
-% setup translate to pickup sponge by UR10
+% setup translate to pickup sponge by TM12
 transSpoU1 = transl(-1.6952, 0.49, 0.55);
 
-% setup translate to move sponge by UR10
+% setup translate to move sponge by TM12
 transSpoU2 = transl(-1.5, 0, 0.55);
 
 transSpoU4 = transl(-1.5, 1.5, 0.55);
 
-% setup initial guess for UR10 pass 1
+% setup initial guess for TM12 pass 1
 moveSpoUIG{1} = [0.5890   -0.5890    0.7854   -1.5708   -1.5708         0];
 moveSpoUIG{2} = [2.4166   -0.3955    0.5712   -1.5708   -1.5708         0];
 moveSpoUIG{3} = [2.4166   -0.3955    0.5712   -1.5708   -1.5708         0];
 moveSpoUIG{4} = [0.5890   -0.5890    0.7854   -1.5708   -1.5708         0];
 
-% setup initial guess for UR10 pass 2
+% setup initial guess for TM12 pass 2
 moveSpoUIG{5} = [-0.6981   -0.6981    1.0472   -1.5708   -1.5708         0];
 moveSpoUIG{6} = [-2.8424   -0.6981    1.0472   -1.5708   -1.5708         0];
 moveSpoUIG{7} = [-2.8424   -0.6981    1.0472   -1.5708   -1.5708         0];
 moveSpoUIG{8} = [-0.6981   -0.6981    1.0472   -1.5708   -1.5708         0];
 
 % setup RMRC translate pass 1
-transSpoU3{1} = transl(-1.5, -0.5, 0.55);
-transSpoU3{2} = transl(0.5, -0.5, 0.55);
-transSpoU3{3} = transl(0.5, -0.4, 0.55);
-transSpoU3{4} = transl(-1.5, -0.4, 0.55);
+transSpoU3{1} = transl(-1.5, 0, 0.55);
+transSpoU3{2} = transl(0.5, -0.2, 0.55);
+transSpoU3{3} = transl(0.5, -0.1, 0.55);
+transSpoU3{4} = transl(-1.8, 0, 0.55);
 
 % setup RMRC translate pass 2
-transSpoU3{5} = transl(-1.5, 1.5, 0.55);
-transSpoU3{6} = transl(0.5, 1.5, 0.55);
-transSpoU3{7} = transl(0.5, 1.3, 0.55);
-transSpoU3{8} = transl(-1.5, 1.3, 0.55);
+transSpoU3{5} = transl(-1.5, 1.7, 0.55);
+transSpoU3{6} = transl(0.5, 1.8, 0.55);
+transSpoU3{7} = transl(0.5, 1.7, 0.55);
+transSpoU3{8} = transl(-1.5, 1.8, 0.55);
+
+%% person collision
+isCollidingPers = checkCollision(persCol, floorCol);
+% show(persCol);
+% show(floorCol);
+
+if isCollidingPers
+            error('Person in operating area');
+        else
+            disp('All clear');
+        end 
 
 %% animate dobot
 % setup parameters
-steps = 3;
+steps = 15;
 
 % solve IK to pickup sponge by Dobot
 qPiD1 = rd.model.getpos;
@@ -231,23 +311,23 @@ for i = 1:1:steps
     rd.model.animate(qMatrixD3(i,:));
 end
 
-%% animate UR10
-% solve IK to pickup sponge by UR10
+%% animate TM12
+% solve IK to pickup sponge by TM12
 qPiU1 = rl.model.getpos;
 qPiU2 = rl.model.ikcon(transSpoU1, pickSpoUIG1);
 qMatrixU1 = jtraj(qPiU1,qPiU2,steps);
 
-% animate UR10 pickup sponge
+% animate TM12 pickup sponge
 for i = 1:1:steps
     rl.model.animate(qMatrixU1(i,:));
 end
 
-% solve IK to place sponge by UR10
+% solve IK to place sponge by TM12
 qPlU1 = rl.model.getpos;
 qPlU2 = rl.model.ikcon(transSpoU2*rpy2tr(0,0,-pi/2), placeSpoUIG1);
 qMatrixU2 = jtraj(qPlU1,qPlU2,steps);
 
-% animate sponge placement by UR10
+% animate sponge placement by TM12
 for i = 1:1:steps
     rl.model.animate(qMatrixU2(i,:));
 
@@ -292,10 +372,46 @@ for j = 1:1:4-1
         J = rl.model.jacob0(qMatrixU3(i, :));
         qdot = pinv(J)*xdot;
         qMatrixU3(i+1, :) = qMatrixU3(i, :) + deltaT*qdot';
+
+        
     end
 
     for i = 1:1:stepR
         rl.model.animate(qMatrixU3(i,:));
+
+        % Collision detection section
+        allTransforms = cell(1, rl.model.n);  % Pre-allocate a cell array for the transformations
+        currentT = eye(4);  % Start with the identity matrix
+
+        qT = qMatrixU3(i,:);
+
+        % for k = 1:rl.model.n
+        %     % Compute the transformation for the current link
+        %     ai = rl.model.A(k, qT);
+        % 
+        %     % Extract the matrix representation from the SE3 object
+        %     amatrix = ai.double;
+        % 
+        %     % Update the cumulative transformation
+        %     currentT = currentT * amatrix;
+        % 
+        %     % Store the transformation in the cell array
+        %     allTransforms{k} = currentT;
+        % end
+
+        linkT6 = rl.model.fkine(qT);
+
+        % linkT6 = allTransforms{6};
+        % linkT5 = allTransforms{5};
+        % linkT4 = allTransforms{4};
+
+        capsuleLink6.Pose = linkT6.T;
+        % capsuleLink5.Pose = linkT5;
+        % capsuleLink4.Pose = linkT4;
+
+        % show(capsuleLink4);
+        % show(capsuleLink5);
+        % show(capsuleLink6);
 
         % Animate sponge moving with arm
         trU = rl.model.fkine(rl.model.getpos);
@@ -304,17 +420,28 @@ for j = 1:1:4-1
 
         tranVertspo = [vertspo, ones(size(vertspo,1),1)] * trU.T' * transl(offset)';
         set(sponge,'Vertices',tranVertspo(:,1:3));
-    end
+        % end of sponge animation
 
+        % isColliding6 = checkCollision(capsuleLink6, box1);
+        % % isColliding5 = checkCollision(capsuleLink5, box1);
+        % % isColliding4 = checkCollision(capsuleLink4, box1);
+
+        % if isColliding6 || isColliding5 || isColliding4
+        % if isColliding6
+        %     error('Collision detected');
+        % else
+        %     disp('No collisions detected');
+        % end
+    end
     qU1 = qMatrixU3(end, :);
 end
 
-% solve IK to home UR10
+% solve IK to home TM12
 qHoU1 = rl.model.getpos;
 qHoU2 = homeUIG1;
 qMatrixU4 = jtraj(qHoU1,qHoU2,steps);
 
-% animate UR10 home
+% animate TM12 home
 for i = 1:1:steps
     rl.model.animate(qMatrixU4(i,:));
 end
@@ -395,23 +522,23 @@ for i = 1:1:steps
     rd.model.animate(qMatrixD3(i,:));
 end
 
-%% animate UR10 again 
-% solve IK to pickup sponge by UR10
+%% animate TM12 again
+% solve IK to pickup sponge by TM12
 qPiU1 = rl.model.getpos;
 qPiU2 = rl.model.ikcon(transSpoU1, pickSpoUIG1);
 qMatrixU1 = jtraj(qPiU1,qPiU2,steps);
 
-% animate UR10 pickup sponge
+% animate TM12 pickup sponge
 for i = 1:1:steps
     rl.model.animate(qMatrixU1(i,:));
 end
 
-% solve IK to place sponge by UR10
+% solve IK to place sponge by TM12
 qPlU1 = rl.model.getpos;
 qPlU2 = rl.model.ikcon(transSpoU4*rpy2tr(0,0,-pi/2), placeSpoUIG1);
 qMatrixU2 = jtraj(qPlU1,qPlU2,steps);
 
-% animate sponge placement by UR10
+% animate sponge placement by TM12
 for i = 1:1:steps
     rl.model.animate(qMatrixU2(i,:));
 
@@ -430,7 +557,7 @@ deltaT = 0.05;
 
 qU1 = [qMatrixU2(3,:)];
 
-for j = 1:1:4-1
+for j = 5:1:8-1
     tranSpoUplus = transSpoU3{(j+1)};
     moveSpoUIGplus = moveSpoUIG{(j+1)};
     qU2 = rl.model.ikcon(tranSpoUplus, moveSpoUIGplus);
@@ -461,6 +588,18 @@ for j = 1:1:4-1
     for i = 1:1:stepR
         rl.model.animate(qMatrixU3(i,:));
 
+        % Collision detection
+        allTransforms = cell(1, rl.model.n);  % Pre-allocate a cell array for the transformations
+        currentT = eye(4);  % Start with the identity matrix
+
+        qT = qMatrixU3(i,:);
+
+        linkT6 = rl.model.fkine(qT);
+
+        capsuleLink6.Pose = linkT6.T;
+
+        % show(capsuleLink6);
+
         % Animate sponge moving with arm
         trU = rl.model.fkine(rl.model.getpos);
 
@@ -468,21 +607,31 @@ for j = 1:1:4-1
 
         tranVertspo = [vertspo, ones(size(vertspo,1),1)] * trU.T' * transl(offset)';
         set(sponge,'Vertices',tranVertspo(:,1:3));
+        % End of sponge animation
+
+        % isColliding6 = checkCollision(capsuleLink6, box1);
+
+        % if isColliding6
+        %     error('Collision detected');
+        % else
+        %     disp('No collisions detected');
+        % end
     end
 
     qU1 = qMatrixU3(end, :);
 end
 
-% solve IK to home UR10
+% solve IK to home TM12
 qHoU1 = rl.model.getpos;
 qHoU2 = homeUIG1;
 qMatrixU4 = jtraj(qHoU1,qHoU2,steps);
 
-% animate UR10 home
+% animate TM12 home
 for i = 1:1:steps
     rl.model.animate(qMatrixU4(i,:));
 end
-    %%
-    % rd.model.teach;
-    % rl.model.teach(qlinear);
+
+%%
+% rd.model.teach;
+% rl.model.teach(qlinear);
 

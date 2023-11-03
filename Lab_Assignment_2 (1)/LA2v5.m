@@ -64,7 +64,8 @@ set(emer,'Vertices',vertsemer(:,1:3));
 
 pers = PlaceObject('personMaleOld.ply');
 vertpers = get(pers,'Vertices');
-tranVertpers = [vertpers, ones(size(vertpers,1),1)] * transl(-2,-2,0)' * trotz(pi);
+tranVertpers = [vertpers, ones(size(vertpers,1),1)] * transl(-2.5,2,0)' * trotz(pi);  % outside light curtain
+% tranVertpers = [vertpers, ones(size(vertpers,1),1)] * transl(-2.5,1.3,0)' * trotz(pi); % in light curtain
 set(pers,'Vertices',tranVertpers(:,1:3));
 % set(pers,'Vertices',tranVertpers(:,1:3), 'Facecolor', 'yellow');
 
@@ -141,7 +142,7 @@ rd = DobotMagician(rDBaseTr);
 qdobot = zeros(1,rd.model.n);
 rd.model.plot(qdobot,'nojaxes','noarrow','nowrist','nobase','noshadow','noname','notiles', 'fps', 60 ,'lightpos', ([0 0 -20]))
 
-%setup UR10
+%setup TM12
 rlBaseTr = baseTr*transl(-0.5, 0.75, 0.5);
 rl = UR10(rlBaseTr);
 rl.model.tool = troty(pi);
@@ -151,7 +152,7 @@ qlinear(4) = -pi/2;
 qlinear(5) = -pi/2;
 rl.model.plot(qlinear,'nojaxes','noarrow','nowrist','nobase','noshadow','noname','notiles', 'fps', 60 ,'lightpos', ([0 0 -20]))
 
-% Add Ellipsoid to UR10
+% Add Ellipsoid to TM12
 capsuleLink4 = collisionSphere(1);
 capsuleLink5 = collisionCapsule(0.1,0.12);
 capsuleLink6 = collisionCapsule(0.1,0.05);
@@ -196,31 +197,31 @@ transSpoD3 = transl(-1.669,0.5,0.55);
 % setup translate to home Dobot
 transHoD1 = transl(-2.06, 0.5, 0.971);
 
-% setup translate to home UR10
+% setup translate to home TM12
 transHoU1 = transl(-0.5904, 0.5861, 1.928);
 
-% setup initial guess for UR10
+% setup initial guess for TM12
 pickSpoUIG1 = [-0.0982   -0.4909    0.8836   -1.9635   -1.2763         0];
 
 placeSpoUIG1 = [0.5890   -0.5890    0.7854   -1.5708   -1.5708         0];
 
 homeUIG1 = [0 -90 0 -90 -90 0];
 
-% setup translate to pickup sponge by UR10
+% setup translate to pickup sponge by TM12
 transSpoU1 = transl(-1.6952, 0.49, 0.55);
 
-% setup translate to move sponge by UR10
+% setup translate to move sponge by TM12
 transSpoU2 = transl(-1.5, 0, 0.55);
 
 transSpoU4 = transl(-1.5, 1.5, 0.55);
 
-% setup initial guess for UR10 pass 1
+% setup initial guess for TM12 pass 1
 moveSpoUIG{1} = [0.5890   -0.5890    0.7854   -1.5708   -1.5708         0];
 moveSpoUIG{2} = [2.4166   -0.3955    0.5712   -1.5708   -1.5708         0];
 moveSpoUIG{3} = [2.4166   -0.3955    0.5712   -1.5708   -1.5708         0];
 moveSpoUIG{4} = [0.5890   -0.5890    0.7854   -1.5708   -1.5708         0];
 
-% setup initial guess for UR10 pass 2
+% setup initial guess for TM12 pass 2
 moveSpoUIG{5} = [-0.6981   -0.6981    1.0472   -1.5708   -1.5708         0];
 moveSpoUIG{6} = [-2.8424   -0.6981    1.0472   -1.5708   -1.5708         0];
 moveSpoUIG{7} = [-2.8424   -0.6981    1.0472   -1.5708   -1.5708         0];
@@ -310,23 +311,23 @@ for i = 1:1:steps
     rd.model.animate(qMatrixD3(i,:));
 end
 
-%% animate UR10
-% solve IK to pickup sponge by UR10
+%% animate TM12
+% solve IK to pickup sponge by TM12
 qPiU1 = rl.model.getpos;
 qPiU2 = rl.model.ikcon(transSpoU1, pickSpoUIG1);
 qMatrixU1 = jtraj(qPiU1,qPiU2,steps);
 
-% animate UR10 pickup sponge
+% animate TM12 pickup sponge
 for i = 1:1:steps
     rl.model.animate(qMatrixU1(i,:));
 end
 
-% solve IK to place sponge by UR10
+% solve IK to place sponge by TM12
 qPlU1 = rl.model.getpos;
 qPlU2 = rl.model.ikcon(transSpoU2*rpy2tr(0,0,-pi/2), placeSpoUIG1);
 qMatrixU2 = jtraj(qPlU1,qPlU2,steps);
 
-% animate sponge placement by UR10
+% animate sponge placement by TM12
 for i = 1:1:steps
     rl.model.animate(qMatrixU2(i,:));
 
@@ -435,12 +436,12 @@ for j = 1:1:4-1
     qU1 = qMatrixU3(end, :);
 end
 
-% solve IK to home UR10
+% solve IK to home TM12
 qHoU1 = rl.model.getpos;
 qHoU2 = homeUIG1;
 qMatrixU4 = jtraj(qHoU1,qHoU2,steps);
 
-% animate UR10 home
+% animate TM12 home
 for i = 1:1:steps
     rl.model.animate(qMatrixU4(i,:));
 end
@@ -521,23 +522,23 @@ for i = 1:1:steps
     rd.model.animate(qMatrixD3(i,:));
 end
 
-%% animate UR10 again
-% solve IK to pickup sponge by UR10
+%% animate TM12 again
+% solve IK to pickup sponge by TM12
 qPiU1 = rl.model.getpos;
 qPiU2 = rl.model.ikcon(transSpoU1, pickSpoUIG1);
 qMatrixU1 = jtraj(qPiU1,qPiU2,steps);
 
-% animate UR10 pickup sponge
+% animate TM12 pickup sponge
 for i = 1:1:steps
     rl.model.animate(qMatrixU1(i,:));
 end
 
-% solve IK to place sponge by UR10
+% solve IK to place sponge by TM12
 qPlU1 = rl.model.getpos;
 qPlU2 = rl.model.ikcon(transSpoU4*rpy2tr(0,0,-pi/2), placeSpoUIG1);
 qMatrixU2 = jtraj(qPlU1,qPlU2,steps);
 
-% animate sponge placement by UR10
+% animate sponge placement by TM12
 for i = 1:1:steps
     rl.model.animate(qMatrixU2(i,:));
 
@@ -620,12 +621,12 @@ for j = 5:1:8-1
     qU1 = qMatrixU3(end, :);
 end
 
-% solve IK to home UR10
+% solve IK to home TM12
 qHoU1 = rl.model.getpos;
 qHoU2 = homeUIG1;
 qMatrixU4 = jtraj(qHoU1,qHoU2,steps);
 
-% animate UR10 home
+% animate TM12 home
 for i = 1:1:steps
     rl.model.animate(qMatrixU4(i,:));
 end
