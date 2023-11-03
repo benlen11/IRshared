@@ -276,13 +276,13 @@ for i = 1:1:stepslow
     rd.model.animate(qMatrixD1(i,:));
 end
 
-animate Dobot & sponge moving
+% animate Dobot & sponge moving
 for j = 1:1:4
     qMoD1 = rd.model.getpos;
     qMoD2 = rd.model.ikcon(transSpoD2{j}, moveD{j});
     qMatrixD2 = jtraj(qMoD1,qMoD2,stepslow);
 
-    for i = 1:1:steps
+    for i = 1:1:stepslow
         rd.model.animate(qMatrixD2(i,:));
 
         % Animate sponge moving with arm
@@ -487,13 +487,13 @@ for i = 1:1:stepslow
     set(sponge,'Vertices',tranVertspo(:,1:3));
 end
 
-animate Dobot & sponge moving
+% animate Dobot & sponge moving
 for j = 1:1:4
     qMoD1 = rd.model.getpos;
     qMoD2 = rd.model.ikcon(transSpoD2{j}, moveD{j});
     qMatrixD2 = jtraj(qMoD1,qMoD2,stepslow);
 
-    for i = 1:1:steps
+    for i = 1:1:stepslow
         rd.model.animate(qMatrixD2(i,:));
 
         % Animate sponge moving with arm
