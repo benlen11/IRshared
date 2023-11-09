@@ -158,7 +158,7 @@ a = arduino('/dev/ttyACM0','Uno','Libraries','ShiftRegister');
 configurePin(a,'D2','pullup');
 time = 200;
 for i = 0.1:0.05:1.0 
- disp('Dobot g');
+ disp('Dobot good');
  i
  joint_target = [0.0,i,0.3,0.0];
  dobot.PublishTargetJoint(joint_target)
@@ -166,7 +166,7 @@ for i = 0.1:0.05:1.0
  button_status = readDigitalPin(a, 'D2')      
  if button_status == 0
      disp('Push buttons pressed');
-     %add estop function here
+     dobot.EStopRobot();
      clear register a
      time=0;
      break;
